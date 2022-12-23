@@ -20,7 +20,6 @@ App = {
       window.web3 = new Web3(ethereum)
       try {
         await ethereum.enable()
-        // Acccounts now exposed
         web3.eth.sendTransaction({/* ... */})
       } catch (error) {
       }
@@ -60,19 +59,15 @@ App = {
   },
 
   renderTasks: async () => {
-    // Load the total task count from the blockchain
     const taskCount = await App.todoList.taskCount()
     const $taskTemplate = $('.taskTemplate')
 
-    // Render out each task with a new task template
     for (var i = 1; i <= taskCount; i++) {
-      // Fetch the task data from the blockchain
       const task = await App.todoList.tasks(i)
       const taskId = task[0].toNumber()
       const taskContent = task[1]
       const taskCompleted = task[2]
 
-      // Create the html for the task
       const $newTaskTemplate = $taskTemplate.clone()
       $newTaskTemplate.find('.content').html(taskContent)
       $newTaskTemplate.find('input')
@@ -80,7 +75,6 @@ App = {
                       .prop('checked', taskCompleted)
                       .on('click', App.toggleCompleted)
 
-      // Put the task in the correct list
       if (taskCompleted) {
         $('#completedTaskList').append($newTaskTemplate)
       } else {
