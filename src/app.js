@@ -25,50 +25,37 @@ App = {
       } catch (error) {
       }
     }
-    // Legacy dapp browsers...
     else if (window.web3) {
       App.web3Provider = web3.currentProvider
       window.web3 = new Web3(web3.currentProvider)
-      // Acccounts always exposed
       web3.eth.sendTransaction({/* ... */})
     }
-    // Non-dapp browsers...
     else {
       console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   },
 
   loadAccount: async () => {
-    // Set the current blockchain account
     App.account = web3.eth.accounts[0]
   },
 
   loadContract: async () => {
-    // Create a JavaScript version of the smart contract
     const todoList = await $.getJSON('TodoList.json')
     App.contracts.TodoList = TruffleContract(todoList)
     App.contracts.TodoList.setProvider(App.web3Provider)
-
-    // Hydrate the smart contract with values from the blockchain
     App.todoList = await App.contracts.TodoList.deployed()
   },
 
   render: async () => {
-    // Prevent double render
     if (App.loading) {
       return
     }
-
-    // Update app loading state
     App.setLoading(true)
 
-    // Render Account
     $('#account').html(App.account)
 
-    // Render Tasks
     await App.renderTasks()
 
-    // Update loading state
     App.setLoading(false)
   },
 
